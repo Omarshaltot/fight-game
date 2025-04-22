@@ -33,8 +33,11 @@ class sprite {
     draw() {
         c.fillStyle = this.color;
         c.fillRect(this.position.x, this.position.y, this.width, this.height);
-        c.fillStyle = 'green';
-        c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
+        if (this.isattacking) {
+
+            c.fillStyle = 'green';
+            c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
+        }
     }
 
     update() {
@@ -121,16 +124,16 @@ function animate() {
 
     player.velocity.x = 0;
     if (keys.a.pressed && player.lastKey === 'a') {
-        player.velocity.x = -1;
+        player.velocity.x = -2;
     } else if (keys.d.pressed && player.lastKey === 'd') {
-        player.velocity.x = 1;
+        player.velocity.x = 2;
     }
 
     enemy.velocity.x = 0;
     if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
-        enemy.velocity.x = -1;
+        enemy.velocity.x = -2;
     } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
-        enemy.velocity.x = 1;
+        enemy.velocity.x = 2;
     }
 
 
@@ -139,6 +142,7 @@ function animate() {
         player.attackBox.position.x <= enemy.position.x + enemy.width &&
         player.attackBox.position.y + player.attackBox.height >= enemy.position.y &&
         player.attackBox.position.y <= enemy.position.y + enemy.height && player.isattacking) {
+        player.isattacking = false;
         console.log('hit');
     }
 }
