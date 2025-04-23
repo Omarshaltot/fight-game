@@ -90,7 +90,7 @@ const enemy = new sprite({
 console.log(enemy);
 console.log(player);
 // #endregion
-
+//helo 
 // #region Key States
 const keys = {
     ArrowRight: {
@@ -121,14 +121,14 @@ function animate() {
     c.fillRect(0, 0, canvas.width, canvas.height);
     player.update('red');
     enemy.update('blue');
-
+    //player movement
     player.velocity.x = 0;
     if (keys.a.pressed && player.lastKey === 'a') {
         player.velocity.x = -2;
     } else if (keys.d.pressed && player.lastKey === 'd') {
         player.velocity.x = 2;
     }
-
+    //enemy movement
     enemy.velocity.x = 0;
     if (keys.ArrowLeft.pressed && enemy.lastKey === 'ArrowLeft') {
         enemy.velocity.x = -2;
