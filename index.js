@@ -90,7 +90,8 @@ const enemy = new sprite({
 console.log(enemy);
 console.log(player);
 // #endregion
-//helo 
+
+//omar 
 // #region Key States
 const keys = {
     ArrowRight: {
