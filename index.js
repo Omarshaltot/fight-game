@@ -149,7 +149,7 @@ function determineWinner({ player, enemy }) {
     } else if (player.health < enemy.health) {
         document.querySelector('#displayText').innerHTML = 'Player 2 Wins';
         timer = 0;
-        console.log('player 2 wins');
+        console.log('player 3 wins');
     }
 }
 
