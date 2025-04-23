@@ -14,15 +14,20 @@ const gravity = 0.2;
 
 // #region Sprite and draw Class and update
 class sprite {
-    constructor({ position, velocity, color }) {
+    constructor({ position, velocity, color, offset }) {
         this.position = position;
         this.velocity = velocity;
         this.width = 50;
         this.height = 150;
         this.lastKey;
+        this.health = 100;
         this.color = color
         this.attackBox = {
-            position: this.position,
+            position: {
+                x: this.position.x,
+                y: this.position.y,
+            },
+            offset: offset,
             width: 100,
             height: 50,
         };
@@ -42,6 +47,8 @@ class sprite {
 
     update() {
         this.draw();
+        this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
+        this.attackBox.position.y = this.position.y
         this.position.x += this.velocity.x;
         this.position.y += this.velocity.y;
         if (this.position.y + this.height + this.velocity.y >= canvas.height) {
@@ -60,6 +67,7 @@ class sprite {
 
     }
 }
+
 // #endregion
 
 // #region Player and Enemy Setup
@@ -69,6 +77,10 @@ const player = new sprite({
         y: 0,
     },
     velocity: {
+        x: 0,
+        y: 0,
+    },
+    offset: {
         x: 0,
         y: 0,
     },
@@ -84,6 +96,10 @@ const enemy = new sprite({
         x: 0,
         y: 0,
     },
+    offset: {
+        x: -50,
+        y: 0,
+    },
     color: 'blue',
 });
 
@@ -91,7 +107,7 @@ console.log(enemy);
 console.log(player);
 // #endregion
 
-//omar 
+
 // #region Key States
 const keys = {
     ArrowRight: {
@@ -114,7 +130,42 @@ const keys = {
     },
 };
 // #endregion
+function rectangularCollision({ rectangle1, rectangle2 }) {
+    return (rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x &&
+        rectangle1.attackBox.position.x <= rectangle2.position.x + rectangle2.width &&
+        rectangle1.attackBox.position.y + rectangle1.attackBox.height >= rectangle2.position.y &&
+        rectangle1.attackBox.position.y <= rectangle2.position.y + rectangle2.height);
+}
 
+function determineWinner({ player, enemy }) {
+    document.querySelector('#displayText').style.display = 'flex';
+    if (player.health === enemy.health) {
+        document.querySelector('#displayText').innerHTML = 'Draw';
+        console.log('draw');
+    } else if (player.health > enemy.health) {
+        document.querySelector('#displayText').innerHTML = 'Player 1 Wins';
+        timer = 0;
+        console.log('player 1 wins');
+    } else if (player.health < enemy.health) {
+        document.querySelector('#displayText').innerHTML = 'Player 2 Wins';
+        timer = 0;
+        console.log('player 2 wins');
+    }
+}
+
+let timer = 60;
+function decreaseTimer() {
+    setTimeout(decreaseTimer, 1000);
+    if (timer > 0) {
+        timer--
+        document.querySelector('#timer').innerHTML = timer;
+    }
+
+    if (timer === 0) {
+        determineWinner({ player, enemy });
+    }
+}
+decreaseTimer();
 // #region Animation Loop
 function animate() {
     window.requestAnimationFrame(animate);
@@ -136,19 +187,36 @@ function animate() {
     } else if (keys.ArrowRight.pressed && enemy.lastKey === 'ArrowRight') {
         enemy.velocity.x = 2;
     }
-
-
-    // Collision detection
-    if (player.attackBox.position.x + player.attackBox.width >= enemy.position.x &&
-        player.attackBox.position.x <= enemy.position.x + enemy.width &&
-        player.attackBox.position.y + player.attackBox.height >= enemy.position.y &&
-        player.attackBox.position.y <= enemy.position.y + enemy.height && player.isattacking) {
+    if (
+        rectangularCollision({
+            rectangle1: player,
+            rectangle2: enemy,
+        }) && player.isattacking) {
+        console.log('player hit');
         player.isattacking = false;
-        console.log('hit');
+        enemy.health -= 10;
+        document.querySelector('#enemyHealth').style.width = enemy.health + '%';
+    }
+
+    if (
+        rectangularCollision({
+            rectangle1: player,
+            rectangle2: enemy,
+        }) && enemy.isattacking) {
+        console.log('enemy hit');
+        enemy.isattacking = false;
+        player.health -= 10;
+        document.querySelector('#playerHealth').style.width = player.health + '%';
+
+        // End game based on health
+    }
+    if (enemy.health <= 0 || player.health <= 0) {
+        determineWinner({ player, enemy });
     }
 }
-animate();
 // #endregion
+
+animate();
 
 // #region Event Listeners
 // Player actions
@@ -215,6 +283,10 @@ window.addEventListener('keydown', (event) => {
         case 'ArrowUp':
             enemy.velocity.y = -10;
             break;
+        case "m":
+            enemy.attack();
+            break;
     }
+
 });
 // #endregion
