@@ -8,70 +8,8 @@ canvas.height = 576;
 c.fillRect(0, 0, canvas.width, canvas.height);
 // #endregion
 
-// #region Constants
-const gravity = 0.2;
-// #endregion
-
-// #region Sprite and draw Class and update
-class sprite {
-    constructor({ position, velocity, color, offset }) {
-        this.position = position;
-        this.velocity = velocity;
-        this.width = 50;
-        this.height = 150;
-        this.lastKey;
-        this.health = 100;
-        this.color = color
-        this.attackBox = {
-            position: {
-                x: this.position.x,
-                y: this.position.y,
-            },
-            offset: offset,
-            width: 100,
-            height: 50,
-        };
-        this.isattacking
-
-    }
-
-    draw() {
-        c.fillStyle = this.color;
-        c.fillRect(this.position.x, this.position.y, this.width, this.height);
-        if (this.isattacking) {
-
-            c.fillStyle = 'green';
-            c.fillRect(this.attackBox.position.x, this.attackBox.position.y, this.attackBox.width, this.attackBox.height);
-        }
-    }
-
-    update() {
-        this.draw();
-        this.attackBox.position.x = this.position.x + this.attackBox.offset.x;
-        this.attackBox.position.y = this.position.y
-        this.position.x += this.velocity.x;
-        this.position.y += this.velocity.y;
-        if (this.position.y + this.height + this.velocity.y >= canvas.height) {
-            this.velocity.y = 0;
-            this.position.y = canvas.height - this.height;
-        } else {
-            this.velocity.y += gravity;
-        }
-    }
-
-    attack() {
-        this.isattacking = true;
-        setTimeout(() => {
-            this.isattacking = false;
-        }, 100);
-
-    }
-}
-
-// #endregion
-
 // #region Player and Enemy Setup
-const player = new sprite({
+const player = new Fighter({
     position: {
         x: 200,
         y: 0,
@@ -85,9 +23,10 @@ const player = new sprite({
         y: 0,
     },
     color: 'red',
+    context: c, // Pass context
 });
 
-const enemy = new sprite({
+const enemy = new Fighter({
     position: {
         x: 600,
         y: 100,
@@ -101,12 +40,28 @@ const enemy = new sprite({
         y: 0,
     },
     color: 'blue',
+    context: c, // Pass context
 });
 
+const background = new Sprite({
+    position: {
+        x: 0,
+        y: 0,
+    },
+    imageSrc: './img/background.png',
+});
+const shop = new Sprite({
+    position: {
+        x: 600,
+        y: 128,
+    },
+    imageSrc: './img/shop.png',
+    scale: 2.75,
+    framesMaze: 6,
+});
 console.log(enemy);
 console.log(player);
 // #endregion
-
 
 // #region Key States
 const keys = {
@@ -130,6 +85,7 @@ const keys = {
     },
 };
 // #endregion
+
 function rectangularCollision({ rectangle1, rectangle2 }) {
     return (rectangle1.attackBox.position.x + rectangle1.attackBox.width >= rectangle2.position.x &&
         rectangle1.attackBox.position.x <= rectangle2.position.x + rectangle2.width &&
@@ -149,7 +105,7 @@ function determineWinner({ player, enemy }) {
     } else if (player.health < enemy.health) {
         document.querySelector('#displayText').innerHTML = 'Player 2 Wins';
         timer = 0;
-        console.log('player 3 wins');
+        console.log('player 2 wins');
     }
 }
 
@@ -157,7 +113,7 @@ let timer = 60;
 function decreaseTimer() {
     setTimeout(decreaseTimer, 1000);
     if (timer > 0) {
-        timer--
+        timer--;
         document.querySelector('#timer').innerHTML = timer;
     }
 
@@ -166,13 +122,16 @@ function decreaseTimer() {
     }
 }
 decreaseTimer();
+
 // #region Animation Loop
 function animate() {
     window.requestAnimationFrame(animate);
     c.fillStyle = 'black';
     c.fillRect(0, 0, canvas.width, canvas.height);
-    player.update('red');
-    enemy.update('blue');
+    background.update();
+    shop.update();
+    player.update();
+    enemy.update();
     //player movement
     player.velocity.x = 0;
     if (keys.a.pressed && player.lastKey === 'a') {
@@ -287,6 +246,5 @@ window.addEventListener('keydown', (event) => {
             enemy.attack();
             break;
     }
-
 });
 // #endregion
