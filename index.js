@@ -428,4 +428,23 @@ window.addEventListener('keyup', (event) => {
             break;
     }
 });
+window.addEventListener('keydown', (event) => {
+    switch (event.key) {
+        case 'ArrowRight':
+            keys.ArrowRight.pressed = true;
+            enemy.lastKey = 'ArrowRight';
+            break;
+        case 'ArrowLeft':
+            keys.ArrowLeft.pressed = true;
+            enemy.lastKey = 'ArrowLeft';
+            break;
+        case 'ArrowUp':
+            if (enemy.velocity.y > 0) {
+                break;
+            };
+            console.log(enemy.velocity.y);
+            enemy.velocity.y = -10;
+            break;
+    }
+});
 // #endregion
