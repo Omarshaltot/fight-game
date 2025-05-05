@@ -1,52 +1,35 @@
+<!DOCTYPE html>
+<html>
+
 <head>
-    <style>
-        * {
-            box-sizing: border-box;
+    <title>Start Game</title>
+    <script>
+        function goToIndex() {
+            window.location.href = "game.html";
         }
-    </style>
+        function goToDeveloper() {
+            window.location.href = "dev.html";
+        }
+    </script>
 </head>
 
 <body>
-    <!-- canvas container  -->
-    <div style="position: relative; display: inline-block;">
-        <!--  health bar -->
-        <div style="position: absolute; display: flex; padding: 30px; width: 100%; align-items: center;">
-            <!-- player health  -- -->
-            <div style="position: relative; height: 30px; width: 100%; display: flex; justify-content: flex-end;">
-                <div style="background-color: yellow; height: 30px; width: 100%;"></div>
-
-                <div id="playerHealth"
-                    style=" position: absolute; background-color: blue; top: 0; right: 0; bottom: 0;width: 100%;">
-                </div>
-
-            </div>
-            <!-- timer -->
-            <div id="timer" style="background-color:
-             red; height: 100px; width: 100px;
-              flex-shrink: 0;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              "> 10</div>
-            <!-- enemy health  -->
-            <div style="position: relative; height: 30px; width: 100%;">
-                <div style="background-color: yellow; height: 30px;"></div>
-
-                <div id="enemyHealth"
-                    style=" position: absolute; background-color: blue; top: 0; right: 0; bottom: 0; left: 0; "></div>
-
-            </div>
-        </div>
-        <div id="displayText"
-            style="position: absolute; display:none; justify-content: center; align-items: center; color: white; top: 0; right: 0; bottom: 0; left: 0; ">
-            tie</div>
-        <canvas>
-
-
-
-        </canvas>
-    </div>
-    <script src="js/classes.js"></script>
-    <script src="index.js"></script>
-    <script src="js/utls.js"></script>
+    <svg width="500" height="300">
+        <!-- Title -->
+        <text x="250" y="60" font-size="32" text-anchor="middle" fill="black">Fight Game</text>
+        <!-- Start Game Button -->
+        <a onclick="goToIndex()">
+            <rect x="150" y="100" width="200" height="50" rx="10" fill="#4CAF50" stroke="black" stroke-width="2" />
+            <text x="250" y="132" font-size="24" text-anchor="middle" fill="white" pointer-events="none">Start
+                Game</text>
+        </a>
+        <!-- Developer Button -->
+        <a onclick="goToDeveloper()">
+            <rect x="150" y="170" width="200" height="50" rx="10" fill="#2196F3" stroke="black" stroke-width="2" />
+            <text x="250" y="202" font-size="24" text-anchor="middle" fill="white"
+                pointer-events="none">Developer</text>
+        </a>
+    </svg>
 </body>
+
+</html>

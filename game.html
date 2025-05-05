@@ -1,0 +1,183 @@
+<head>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+    </style>
+    <script>
+        // Show/hide on-screen controls based on screen width (media query in JS)
+        function updateControlsVisibility() {
+            var controls = document.getElementById('mobileControls');
+            if (!controls) return;
+            if (window.innerWidth <= 1200) {
+                controls.style.display = 'block';
+            } else {
+                controls.style.display = 'none';
+            }
+        }
+        window.addEventListener('resize', updateControlsVisibility);
+        window.addEventListener('DOMContentLoaded', updateControlsVisibility);
+
+        // Player and Enemy control handlers
+        function mobileControl(target, action, state) {
+            // state: 'down' or 'up'
+            const eventType = state === 'down' ? 'keydown' : 'keyup';
+            let key;
+            if (target === 'player') {
+                switch (action) {
+                    case 'left': key = 'a'; break;
+                    case 'right': key = 'd'; break;
+                    case 'jump': key = 'w'; break;
+                    case 'attack': key = ' '; break;
+                }
+            } else if (target === 'enemy') {
+                switch (action) {
+                    case 'left': key = 'ArrowLeft'; break;
+                    case 'right': key = 'ArrowRight'; break;
+                    case 'jump': key = 'ArrowUp'; break;
+                    case 'attack': key = 'm'; break;
+                }
+            }
+            if (key) {
+                const event = new KeyboardEvent(eventType, { key });
+                window.dispatchEvent(event);
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <!-- canvas container  -->
+    <div style="position: relative; display: inline-block;">
+        <!--  health bar -->
+        <div style="position: absolute; display: flex; padding: 30px; width: 100%; align-items: center;">
+            <!-- player health  -- -->
+            <div style="position: relative; height: 30px; width: 100%; display: flex; justify-content: flex-end;">
+                <div style="background-color: yellow; height: 30px; width: 100%;"></div>
+
+                <div id="playerHealth"
+                    style=" position: absolute; background-color: blue; top: 0; right: 0; bottom: 0;width: 100%;">
+                </div>
+
+            </div>
+            <!-- timer -->
+            <div id="timer" style="background-color:
+             red; height: 100px; width: 100px;
+              flex-shrink: 0;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              "> 10</div>
+            <!-- enemy health  -->
+            <div style="position: relative; height: 30px; width: 100%;">
+                <div style="background-color: yellow; height: 30px;"></div>
+
+                <div id="enemyHealth"
+                    style=" position: absolute; background-color: blue; top: 0; right: 0; bottom: 0; left: 0; "></div>
+
+            </div>
+        </div>
+        <div id="displayText"
+            style="position: absolute; display:none; justify-content: center; align-items: center; color: white; top: 0; right: 0; bottom: 0; left: 0; ">
+            tie</div>
+        <canvas>
+        </canvas>
+        <!-- On-screen mobile controls (SVG, no CSS) -->
+        <div id="mobileControls"
+            style="display:none; position:absolute; left:0; right:0; bottom:10px; width:100%; z-index:10; pointer-events:auto;">
+            <!-- Enemy Controls (left side) -->
+            <div style="position:absolute; left:0; bottom:100px; width:320px; z-index:11;">
+                <svg width="320" height="80">
+                    <!-- Left Button -->
+                    <g ontouchstart="mobileControl('enemy','left','down')"
+                        ontouchend="mobileControl('enemy','left','up')"
+                        onmousedown="mobileControl('enemy','left','down')"
+                        onmouseup="mobileControl('enemy','left','up')"
+                        onmouseleave="mobileControl('enemy','left','up')">
+                        <rect x="10" y="10" width="60" height="60" rx="12" fill="#444" stroke="black"
+                            stroke-width="2" />
+                        <text x="40" y="50" font-size="28" text-anchor="middle" fill="white">&#8592;</text>
+                    </g>
+                    <!-- Right Button -->
+                    <g ontouchstart="mobileControl('enemy','right','down')"
+                        ontouchend="mobileControl('enemy','right','up')"
+                        onmousedown="mobileControl('enemy','right','down')"
+                        onmouseup="mobileControl('enemy','right','up')"
+                        onmouseleave="mobileControl('enemy','right','up')">
+                        <rect x="80" y="10" width="60" height="60" rx="12" fill="#444" stroke="black"
+                            stroke-width="2" />
+                        <text x="110" y="50" font-size="28" text-anchor="middle" fill="white">&#8594;</text>
+                    </g>
+                    <!-- Jump Button -->
+                    <g ontouchstart="mobileControl('enemy','jump','down')"
+                        ontouchend="mobileControl('enemy','jump','up')"
+                        onmousedown="mobileControl('enemy','jump','down')"
+                        onmouseup="mobileControl('enemy','jump','up')"
+                        onmouseleave="mobileControl('enemy','jump','up')">
+                        <rect x="200" y="10" width="60" height="60" rx="12" fill="#444" stroke="black"
+                            stroke-width="2" />
+                        <text x="230" y="50" font-size="22" text-anchor="middle" fill="white">JUMP</text>
+                    </g>
+                    <!-- Attack Button -->
+                    <g ontouchstart="mobileControl('enemy','attack','down')"
+                        ontouchend="mobileControl('enemy','attack','up')"
+                        onmousedown="mobileControl('enemy','attack','down')"
+                        onmouseup="mobileControl('enemy','attack','up')"
+                        onmouseleave="mobileControl('enemy','attack','up')">
+                        <rect x="270" y="10" width="60" height="60" rx="12" fill="#b71c1c" stroke="black"
+                            stroke-width="2" />
+                        <text x="300" y="50" font-size="20" text-anchor="middle" fill="white">ATTACK</text>
+                    </g>
+                </svg>
+            </div>
+            <!-- Player Controls (bottom center) -->
+            <div style="margin:0 auto; width:320px;">
+                <svg width="320" height="80">
+                    <!-- Left Button -->
+                    <g ontouchstart="mobileControl('player','left','down')"
+                        ontouchend="mobileControl('player','left','up')"
+                        onmousedown="mobileControl('player','left','down')"
+                        onmouseup="mobileControl('player','left','up')"
+                        onmouseleave="mobileControl('player','left','up')">
+                        <rect x="10" y="10" width="60" height="60" rx="12" fill="#888" stroke="black"
+                            stroke-width="2" />
+                        <text x="40" y="50" font-size="28" text-anchor="middle" fill="white">&#8592;</text>
+                    </g>
+                    <!-- Right Button -->
+                    <g ontouchstart="mobileControl('player','right','down')"
+                        ontouchend="mobileControl('player','right','up')"
+                        onmousedown="mobileControl('player','right','down')"
+                        onmouseup="mobileControl('player','right','up')"
+                        onmouseleave="mobileControl('player','right','up')">
+                        <rect x="80" y="10" width="60" height="60" rx="12" fill="#888" stroke="black"
+                            stroke-width="2" />
+                        <text x="110" y="50" font-size="28" text-anchor="middle" fill="white">&#8594;</text>
+                    </g>
+                    <!-- Jump Button -->
+                    <g ontouchstart="mobileControl('player','jump','down')"
+                        ontouchend="mobileControl('player','jump','up')"
+                        onmousedown="mobileControl('player','jump','down')"
+                        onmouseup="mobileControl('player','jump','up')"
+                        onmouseleave="mobileControl('player','jump','up')">
+                        <rect x="200" y="10" width="60" height="60" rx="12" fill="#888" stroke="black"
+                            stroke-width="2" />
+                        <text x="230" y="50" font-size="22" text-anchor="middle" fill="white">JUMP</text>
+                    </g>
+                    <!-- Attack Button -->
+                    <g ontouchstart="mobileControl('player','attack','down')"
+                        ontouchend="mobileControl('player','attack','up')"
+                        onmousedown="mobileControl('player','attack','down')"
+                        onmouseup="mobileControl('player','attack','up')"
+                        onmouseleave="mobileControl('player','attack','up')">
+                        <rect x="270" y="10" width="60" height="60" rx="12" fill="#e53935" stroke="black"
+                            stroke-width="2" />
+                        <text x="300" y="50" font-size="20" text-anchor="middle" fill="white">ATTACK</text>
+                    </g>
+                </svg>
+            </div>
+        </div>
+    </div>
+    <script src="js/classes.js"></script>
+    <script src="index.js"></script>
+    <script src="js/utls.js"></script>
+</body>
